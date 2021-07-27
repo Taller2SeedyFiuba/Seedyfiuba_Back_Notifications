@@ -10,7 +10,6 @@ fastapi = "^0.66.0"
 uvicorn = "^0.14.0"
 SQLAlchemy = "^1.4.20"
 psycopg2-binary = "^2.9.1"
-firebase-admin = "^5.0.1"
 exponent-server-sdk = "^2.0.0"
 
 [tool.poetry.dev-dependencies]

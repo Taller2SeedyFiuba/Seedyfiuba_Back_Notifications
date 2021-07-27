@@ -2,7 +2,7 @@
 
 #RUN npm install -g nodemon
 
-FROM python:3.8
+FROM tiangolo/uvicorn-gunicorn-fastapi
 
 RUN pip install poetry
 
