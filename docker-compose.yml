@@ -1,0 +1,30 @@
+version: "3"
+services:
+    notifications-service:
+        build: ./
+        volumes:
+            - ./src:/app/src
+        container_name: notifications-service
+        restart: always
+        env_file:
+            - .env
+        networks:
+            - my-net
+        #ports:
+        #    - ${PORT}:${PORT}
+        depends_on:
+            - psql-notifications
+            
+    psql-notifications:
+        image: postgres
+        container_name: psql-notifications
+        environment:
+            - POSTGRES_PASSWORD=postgres
+        #ports:
+        #    - 5400:5432
+        networks:
+            - my-net
+networks:
+    my-net:
+        driver: bridge
+        name: my-net
