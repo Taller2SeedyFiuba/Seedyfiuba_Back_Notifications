@@ -1,4 +1,4 @@
 #!/bin/bash
 
-poetry run uvicorn "src.main:app" --host ${HOST} --port $PORT --reload
+poetry run uvicorn "src.main:app" --port $PORT --reload #--host ${HOST}
 
