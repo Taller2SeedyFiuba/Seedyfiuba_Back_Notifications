@@ -4,6 +4,10 @@ from sqlalchemy.orm import sessionmaker
 from src.core.config import config
 
 DATABASE_URL = config['DATABASE_URL']
+
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 print("Starting database:\n\t" + DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
