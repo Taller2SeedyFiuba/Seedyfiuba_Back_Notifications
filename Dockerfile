@@ -18,4 +18,4 @@ RUN pip install -r ./requirements.txt
 # Install app related dependencies
 #ENV POETRY_VIRTUALENVS_IN_PROJECT true
 
-CMD ["bash", "docker-entrypoint.sh"]
+#CMD ["bash", "docker-entrypoint.sh"]
