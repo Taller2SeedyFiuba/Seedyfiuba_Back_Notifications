@@ -1,3 +1,4 @@
+from src.utils.log import logWarn
 from src.schemas.notification import Notification, NotificationReport
 from typing import List, Tuple
 from exponent_server_sdk import (PushClient, PushMessage, PushTicket)
@@ -20,22 +21,19 @@ def publishMessages(messages: List[PushMessage]) -> Tuple[List[str], List[str]]:
         responses = PushClient().publish_multiple(messages)
 
     except PushServerError as exc:
-        print(exc.errors)
-        print(exc.response_data)
+        logWarn(exc.errors)
         failedTokens = [msg.to[tokenStart:-1] for msg in messages]
     except (ConnectionError, HTTPError) as exc:
-        print(str(exc))
+        logWarn(str(exc))
         failedTokens = [msg.to[tokenStart:-1] for msg in messages]
 
     for idx, response in enumerate(responses):
         try:
-            print("Llega hasta aca")
             response.validate_response()
-            print(f"Succeded token: {messages[idx].to[tokenStart:-1]}")
             succededTokens.append(messages[idx].to[tokenStart:-1])
         except Exception as exc:
             failedTokens.append(messages[idx].to[tokenStart:-1])
-            print(str(exc))
+            logWarn(str(exc))
 
     return (succededTokens, failedTokens)
 

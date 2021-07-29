@@ -44,9 +44,9 @@ def updateUser(db: Session, user: User) -> User:
 
     if not result:
         raise Exception('database-error')
-    
+
     return result
-    
+
 def deleteUser(db: Session, id: str) -> User:
     dbUser = db.query(models.User).filter(models.User.id == id).one()
     db.delete(dbUser)
@@ -55,7 +55,7 @@ def deleteUser(db: Session, id: str) -> User:
 
 
 def createSuscription(db: Session, suscription: Suscription) -> Suscription:
-    
+
     dbSuscription = models.Suscription(**suscription.dict())
     db.add(dbSuscription)
     db.commit()
@@ -68,7 +68,6 @@ def suscriptionExists(db: Session, suscription: Suscription) -> bool:
         .filter(models.Suscription.userid == suscription.userid)\
         .filter(models.Suscription.projectid == suscription.projectid)\
         .first()
-    print(result)
     return True if result else False
 
 def searchSubscribers(db: Session, params : Search) -> List[Suscription]:
@@ -79,11 +78,11 @@ def searchSubscribers(db: Session, params : Search) -> List[Suscription]:
         query = query.filter(models.Suscription.userid == params.userid)
     if (params.projectid):
         query = query.filter(models.Suscription.projectid == params.projectid)
-    
+
     result = query.limit(params.limit).offset((params.page - 1) * params.limit).all()
 
     return [Suscription(**sus.__dict__) for sus in result]
-    
+
 
 def getProjectSubscribers(db: Session, projectid: int) -> List[User]:
 

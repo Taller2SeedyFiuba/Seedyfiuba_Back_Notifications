@@ -1,3 +1,4 @@
+from src.utils.log import logInfo
 from fastapi import FastAPI
 from starlette.exceptions import HTTPException
 from fastapi.exceptions import RequestValidationError
@@ -6,10 +7,11 @@ from .api.errors.ApiError import ApiError
 from .api.errors.handlers import *
 from .database.start import startDatabase
 from fastapi.middleware.cors import CORSMiddleware
+
 startDatabase()
 
+logInfo('Starting Application')
 app = FastAPI()
-
 
 origins = ["*"]
 
@@ -20,7 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 app.add_exception_handler(ApiError, ApiErrorHandler)
 app.add_exception_handler(RequestValidationError, RequestValidationErrorHandler)
