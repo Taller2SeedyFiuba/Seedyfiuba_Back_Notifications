@@ -3,8 +3,10 @@ from typing import List, Tuple
 from exponent_server_sdk import (PushClient, PushMessage, PushTicket)
 from exponent_server_sdk import (
     PushClient,
-    PushMessage
+    PushMessage,
+    PushServerError
 )
+from requests.exceptions import ConnectionError, HTTPError
 
 def publishMessages(messages: List[PushMessage]) -> Tuple[List[str], List[str]]:
 
@@ -16,16 +18,24 @@ def publishMessages(messages: List[PushMessage]) -> Tuple[List[str], List[str]]:
 
     try:
         responses = PushClient().publish_multiple(messages)
-    except Exception as exc:
+
+    except PushServerError as exc:
+        print(exc.errors)
+        print(exc.response_data)
+        failedTokens = [msg.to[tokenStart:-1] for msg in messages]
+    except (ConnectionError, HTTPError) as exc:
         print(str(exc))
-        failedTokens = [msg.to for msg in messages]
+        failedTokens = [msg.to[tokenStart:-1] for msg in messages]
+
     for idx, response in enumerate(responses):
         try:
+            print("Llega hasta aca")
             response.validate_response()
             print(f"Succeded token: {messages[idx].to[tokenStart:-1]}")
             succededTokens.append(messages[idx].to[tokenStart:-1])
-        except Exception:
+        except Exception as exc:
             failedTokens.append(messages[idx].to[tokenStart:-1])
+            print(str(exc))
 
     return (succededTokens, failedTokens)
 
@@ -50,7 +60,6 @@ def sendNotification(noti : Notification) -> NotificationReport:
     """
     report : NotificationReport = NotificationReport(**noti.dict(), failed=[], succeded=[])
     sendLimit = 100 #Expo limit
-    print(str(noti))
     tokens = noti.tokens
     noti.tokens = tokens[:sendLimit]
     tokens = tokens[sendLimit:]
